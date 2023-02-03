@@ -416,10 +416,11 @@ export default function App() {
       <MainUI  injector={injectFunction} info={userInfo} />
       {/*   performance={runLighthouseAndSendCookies} */}
       {/* < DisplaySeo info={userInfo}/> */}
-    <div/>
+    </div>
   
 
-
+  )
+  
   {/* <div className="App" style={{ height: '2000px', width: '2000px' }}>
       <button onClick={injectFunction}>Click me</button>
      
