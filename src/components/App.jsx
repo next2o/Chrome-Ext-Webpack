@@ -12,8 +12,14 @@ export default function App() {
   const [nestedObj, setNestedObj] = useState({
     name: undefined
   })
-  
-  // const [buttonClicked, setButtonClicked] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    chrome.identity.getProfileUserInfo({'accountStatus': 'ANY'}, function(info) {
+      setUserInfo(info);
+    });
+  }, []);
+  console.log(userInfo)
   
   // eslint-disable-next-line no-undef
 
@@ -460,9 +466,9 @@ export default function App() {
 
   return (
     <div>
-      <MainUI  injector={injectFunction} />
+      <MainUI  injector={injectFunction} info={userInfo} />
       {/*   performance={runLighthouseAndSendCookies} */}
-      < DisplaySeo/>
+      {/* < DisplaySeo info={userInfo}/> */}
     <div/>
   
 

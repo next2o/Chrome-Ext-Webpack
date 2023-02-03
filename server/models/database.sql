@@ -1,4 +1,4 @@
-CREATE DATSBASE seo;
+-- CREATE DATSBASE seo;
 
 -- CREATE TABLE seo_table(
 --   _id SERIAL PRIMARY KEY NOT NULL,

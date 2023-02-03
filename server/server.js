@@ -21,7 +21,7 @@ app.use((req, res) => res.status(404).json({ "unknown": "route" }));
 app.use((err, req, res, next) => {
   const defaultErr = {
     log: 'Express error handler caught unknown middleware error',
-    status: 400,
+    status: 500,
     message: { err: 'An error occurred' }
   };
   const errorObj = Object.assign(defaultErr, err);
