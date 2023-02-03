@@ -5,9 +5,7 @@ const databaseController = {};
 databaseController.addToSeo = async (req, res, next) => {
   try {
     const {userId, url, audits, categories, categoryGroups} = req.body;
-    // const auditsJSON = JSON.stringify({audits});
-    // const categoryGroupsJSON = JSON.stringify({categoryGroups});
-    //console.log('audits>'+ auditsJSON, 'category>'+categoryGroups)
+    
     const values = [userId, url, audits, categories, categoryGroups];
     const queryString = 'INSERT INTO seo (user_id, url, audits, categories, category_groups) VALUES ($1, $2, $3, $4, $5) RETURNING *'; 
     console.log('values> '+values)

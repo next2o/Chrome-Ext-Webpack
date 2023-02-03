@@ -1,12 +1,12 @@
 import React, {useState} from "react";
 import { useEffect } from "react";
 
-export default function DisplaySeo ({info}) {
+export default function DisplaySeo (props) {
   const [url, setUrl] = useState('')
   // const [errorMessage, setErrorMessage] = useState(null);
   // const [domain, setDomain] = useState('');
   // const [userId, setUserId] = useState('');
-  console.log(info);
+  console.log(props.info);
   const [lighthouseData, setLighthouseData] = useState({});
 
   const runLighthouse = async (e) => {
@@ -35,8 +35,8 @@ export default function DisplaySeo ({info}) {
   // useEffect(() => {
   //   //console.log(lighthouseData);
   // }, [lighthouseData]);
-  console.log(lighthouseData.categories);
-  console.log(lighthouseData.requestedUrl)
+  // console.log(lighthouseData.categories);
+  // console.log(lighthouseData.requestedUrl)
 
   const sendDataToDatabase = async (e) => {
 
@@ -47,7 +47,7 @@ export default function DisplaySeo ({info}) {
       const response = await fetch('http://localhost:8080/api/addItems', {
         method: "POST",
         body: JSON.stringify({
-          userId: info.id, 
+          userId: props.info.id, 
           url: lighthouseData.requestedUrl, 
           audits: lighthouseData.audits, 
           categories: lighthouseData.categories,
@@ -67,11 +67,12 @@ export default function DisplaySeo ({info}) {
         console.log(err)
       }
   };
-   console.log(lighthouseData);
+
+  console.log(lighthouseData);
 
   return (
     <div>
-      <button onClick={runLighthouse}> Run lighthouse</button>
+      <button onClick={runLighthouse}>Run lighthouse</button>
       <p>{url && url[0].url}</p>
       {lighthouseData && lighthouseData.categories ? <button onClick={sendDataToDatabase}> save to database</button> : null}
       {lighthouseData.categories ? <p>{lighthouseData.categories.seo.score}</p> : null}
