@@ -414,9 +414,10 @@ export default function App() {
   return (
     <div>
       <MainUI  injector={injectFunction} info={userInfo} />
-     
-    </div>
-  )
+      {/*   performance={runLighthouseAndSendCookies} */}
+      {/* < DisplaySeo info={userInfo}/> */}
+    <div/>
+  
 
 
   {/* <div className="App" style={{ height: '2000px', width: '2000px' }}>
