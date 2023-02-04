@@ -39,28 +39,32 @@ export default function DisplaySeo (props) {
   // console.log(lighthouseData.requestedUrl)
 
   const sendDataToDatabase = async (e) => {
-
+    console.log('button clicked')
     e.preventDefault();
     try {
-      console.log(lighthouseData.categories);
-      console.log(lighthouseData.requestedUrl)
+      console.log('categories ->', lighthouseData.categories);
+      console.log('url -> ', lighthouseData.requestedUrl);
+      console.log('id -> ', props.info.id);
+      console.log('category groups -> ', lighthouseData.categoryGroups)
+      console.log('audits -> ', lighthouseData.audits)
       const response = await fetch('http://localhost:8080/api/addItems', {
         method: "POST",
         body: JSON.stringify({
           userId: props.info.id, 
           url: lighthouseData.requestedUrl, 
-          audits: lighthouseData.audits, 
-          categories: lighthouseData.categories,
-          categoryGroups: lighthouseData.categoryGroups 
+          audits: lighthouseData.audits.canonical, 
+          // categories: lighthouseData.categories.performance.auditrefs.id,
+          categoryGroups: lighthouseData.categoryGroups.budgets
         }),
       headers: {
         "content-Type": "application/json"
       }
       });
-      console.log(response)
+      console.log('test1')
       if (!response.ok){
         throw new Error(response.statusText)
       }
+      console.log('test2?')
       const data = await response.json();
       console.log(data);
       } catch (err) {
@@ -68,7 +72,7 @@ export default function DisplaySeo (props) {
       }
   };
 
-  console.log(lighthouseData);
+  //console.log(lighthouseData);
 
   return (
     <div>

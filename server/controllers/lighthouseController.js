@@ -30,7 +30,7 @@ lighthouseController.generateReport = async (req, res, next) => {
         log: 'Express error handler caught error in lighthouseController.generateReport',
         message: { err: 'lighthouseController.generateReport: check server log for details' } 
       });
-  } 
+  }
 };
 
 module.exports = lighthouseController;

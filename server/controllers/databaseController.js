@@ -26,7 +26,7 @@ databaseController.addToSeo = async (req, res, next) => {
     console.log(err.stack);
 
     return next({
-      log: 'Express error handler caught error in databaseController.seo',
+      log: `${err} - Express error handler caught error in databaseController.seo`,
       message: { err: 'databaseController.seo: check server log for details' } 
     });
   }

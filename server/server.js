@@ -2,14 +2,27 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+let bodyParser = require('body-parser');
 
 const lighthouseRouter = require('./routes/lighthouseRouter.js');
 //const cookieRouter = require('./routes/cookies.js');
 const databaseRouter = require('./routes/databaseRouter.js');
 
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({
+  limit: "50mb",
+  extended: false
+}));
 app.use(express.json());
 app.use(cors());
+
+// bodyParser = {
+//   json: {limit: '50mb', extended: true},
+//   urlencoded: {limit: '50mb', extended: true}
+// };
+
 
 // app.use('/api', cookieRouter);
 app.use('/api', lighthouseRouter);
@@ -20,7 +33,7 @@ app.use((req, res) => res.status(404).json({ "unknown": "route" }));
 
 app.use((err, req, res, next) => {
   const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
+    log: `${err} - Express error handler caught unknown middleware error`,
     status: 500,
     message: { err: 'An error occurred' }
   };
