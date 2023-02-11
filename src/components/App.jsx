@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import * as d3 from 'd3';
 import '../App.css';
 import MainUI from './MainUI'
+import { green, red } from '@mui/material/colors';
 
 export default function App() {
 
@@ -18,7 +19,7 @@ export default function App() {
       setUserInfo(info);
     });
   }, []);
-  console.log(userInfo);
+  // console.log(userInfo);
 
   const errors = []
 
@@ -61,7 +62,7 @@ export default function App() {
 
     const svg = d3.select(".chart")
       .attr("viewBox", [-margin.left, -margin.top, width, height])
-      .style("font", "10px sans-serif")
+      .style("font", "8px sans-serif")
 
     const gLink = svg.append("g")
       .attr("fill", "none")
@@ -74,21 +75,29 @@ export default function App() {
       .attr('id', 'node-g')
       .attr("pointer-events", "all")
 
-      let transform;
+    // let transform;
 
-  const zoom = d3.zoom().on("zoom", e => {
-    gNode.attr("transform", (transform = e.transform));
-    gNode.style("stroke-width", 3 / Math.sqrt(transform.k));
-    gLink.attr("transform", (transform = e.transform));
-    gLink.style("stroke-width", 3 / Math.sqrt(transform.k));
-  });
-  
-    svg.call(zoom)
-    .call(zoom.transform, d3.zoomIdentity)
-    .on("pointermove", event => {
-      const p = transform.invert(d3.pointer(event));
-    })
-    .node();
+    // const zoom = d3.zoom().on("zoom", e => {
+    //   gNode.attr("transform", (transform = e.transform));
+    //   gNode.style("stroke-width", 3 / Math.sqrt(transform.k));
+    //   gLink.attr("transform", (transform = e.transform));
+    //   gLink.style("stroke-width", 3 / Math.sqrt(transform.k));
+    // });
+
+    // svg.call(zoom)
+    //   .call(zoom.transform, d3.zoomIdentity)
+    //   .on("pointermove", event => {
+    //     const p = transform.invert(d3.pointer(event));
+    //   })
+    //   .node();
+
+    svg.call(d3.zoom()
+      .on('zoom', (event) => zoomed(event)))
+
+    const zoomed = (e) => {
+      d3.selectAll('g#link-g').attr('transform', e.transform)
+      d3.selectAll('g#node-g').attr('transform', e.transform)
+    }
 
     var tooltip = d3.select('#tree-div')
       .append("div")
@@ -127,7 +136,24 @@ export default function App() {
         .style('background', 'rgb(239 238 238)');
 
       const node = gNode.selectAll("g")
-        .data(nodes, d => d.id)
+        .data(nodes, d => d.id);
+
+
+      const nodeEnter = node.enter().append("g")
+        .attr("transform", d => `translate(${source.y0},${source.x0}) scale(1, 1)`)
+        .attr("fill-opacity", 0)
+        .attr('id', (d) => `${d.data.id.height}, ${d.data.id.width}`)
+        .attr("stroke-opacity", 0)
+        .on("click", (event, d) => { click(d) });
+
+      nodeEnter.append("circle")
+        .attr("r", 4.5)
+        .attr("fill", d => {
+          if (d.data.attributes.flagged) return 'red'
+          else if (d.children) return 'green'
+          else return 'gray'
+        })
+        .attr("stroke-width", 10)
         .on('mouseenter', function (event, d, i) {
           let attr = Object.keys(d.data.attributes)
           const checkedMismatch = ['elementMismatch', 'textMismatch', 'nestedElements', 'improperNesting', 'improperListNesting']
@@ -159,18 +185,6 @@ export default function App() {
             .style("visibility", 'hidden')
             .style('opacity', 0)
         })
-
-      const nodeEnter = node.enter().append("g")
-        .attr("transform", d => `translate(${source.y0},${source.x0}) scale(1, 1)`)
-        .attr("fill-opacity", 0)
-        .attr('id', (d) => `${d.data.id.height}, ${d.data.id.width}`)
-        .attr("stroke-opacity", 0)
-        .on("click", (event, d) => { click(d) });
-
-      nodeEnter.append("circle")
-        .attr("r", 4.5)
-        .attr("fill", d => d.data.attributes.flagged ? "red" : "green")
-        .attr("stroke-width", 10)
 
       nodeEnter.append("text")
         .attr("dy", "0.5em")
@@ -234,8 +248,8 @@ export default function App() {
       }
       update(d);
     }
-    
-    
+
+
     expandAll(root);
 
   }
@@ -250,7 +264,7 @@ export default function App() {
       world: "MAIN"
     }, async (injectionResults) => {
       const firstTree = injectionResults[0].result
-      console.log(firstTree)
+      // console.log(firstTree)
       const comparison = await runComparison(firstTree)
       setNestedObj(comparison)
     });
@@ -274,7 +288,7 @@ export default function App() {
     while (queue.length > 0) {
       //context aka pointer to layer of object
       const { domNode, context, level } = queue.shift();
-      console.log(level)
+      // console.log(level)
       context.innerHTML = domNode.innerHTML
       if (level > levels.length) {
         levels.push([''])
@@ -339,12 +353,12 @@ export default function App() {
     xmlhttp.send(null);
     const parser = new DOMParser()
     const doc = parser.parseFromString(xmlhttp.responseText, 'text/html')
-    console.log(doc)
+    // console.log(doc)
 
     //make tree from DOM
     const root = doc.getElementById('__next') ? doc.getElementById('__next') : doc.getElementById('__gatsby') ? doc.getElementById('__gatsby') : doc.getElementById('root') ? doc.getElementById('root') : doc.body
     const tree = doc.createTreeWalker(root)
-    console.log(tree)
+    // console.log(tree)
 
     //BFS
     const queue = [{ node: tree.currentNode, pointer: currentTree }]
@@ -360,7 +374,7 @@ export default function App() {
 
       if (pointer.name === undefined || pointer.name === null) console.log('its not here')
 
-      console.log(pointer.name, node.nodeName)
+      // console.log(pointer.name, node.nodeName)
       if (node.nodeName.toLowerCase() !== pointer.name.toLowerCase()) {
         pointer.attributes.flagged = true
         pointer.attributes.elementMismatch = 'HTML element is different from the previous render.'
@@ -372,7 +386,7 @@ export default function App() {
         if (pointer) {
           if (pointer.attributes.content) {
             if (pointer.attributes.content !== node.textContent) {
-              console.log('mismatch')
+              // console.log('mismatch')
               pointer.attributes.flagged = true
               pointer.attributes.textMismatch = `This node rendered ${pointer.attributes.content} first and then ${node.textContent} the second time.`
               errors.push({ type: pointer.name, id: pointer.id, msg: pointer.attributes.textMismatch, bgColor: 'pink' })
@@ -420,7 +434,7 @@ export default function App() {
         }
       }
     }
-    console.log(currentTree)
+    // console.log(currentTree)
     setErrorList(errors)
     treeGenerator(currentTree)
     return currentTree

@@ -9,12 +9,13 @@ import * as d3 from 'd3';
 
 const MainUI = (props) => {
   const [active, setActive] = useState("Tree")
- 
+  const [treeActive, setTreeActive] = useState(false)
+
 
   const runTreeVisualizer = () => {
-    const oldSvg = d3.select('#tree-svg')
-    oldSvg.selectAll('*').remove()
-   
+    // const oldSvg = d3.select('#tree-svg')
+    // oldSvg.selectAll('*').remove()
+    if (treeActive) return
     setActive("Tree")
     props.injector()
   }
@@ -24,6 +25,7 @@ const MainUI = (props) => {
 
   useEffect(() => {
     runTreeVisualizer()
+    setTreeActive(true)
   }, [])
 
   return (
@@ -34,7 +36,7 @@ const MainUI = (props) => {
             <img id='logo' src={logoFill} alt="Logo" />
           </div>
           <div className='div-icon'>
-            <CloseIcon fontSize='small' className='CloseIcon'/>
+            <CloseIcon fontSize='small' className='CloseIcon' />
           </div>
         </div>
 
